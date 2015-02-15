@@ -1,16 +1,22 @@
 # Object Mapper
 
 **Version**
-1.0.0-draft
+1.0.1
+
 **Author**
 marazt
+
 **Copyright**
 marazt
+
 **License**
 The MIT License (MIT)
+
 **Last updated**
 12 February 2015
 
+**Package Download**
+https://pypi.python.org/pypi/object-mapper
 ---
 
 ## About
@@ -21,6 +27,7 @@ It helps you to create objects between project layers (data layer, service layer
 ## Example
 
 1.  **Mapping of the properties without mapping definition**
+
 In this case are mapped only these properties of the target class which
 are in target and source classes. Other properties are not mapped.
 Suppose we have class `A` with attributes `name` and `last_name`
@@ -36,6 +43,7 @@ instance_b = mapper.map(A())
 In this case, value of A.name will be copied into B.name.
 
 2. **Mapping with defined mapping functions**
+
 Suppose we have class `A` with attributes `first_name` and `last_name`
 , class `B` with attribute `full_name` and class `C` with attribute reverse_name.
 And want to map it in a way `B.full_name = A.first_name + A.last_name` and
@@ -55,6 +63,7 @@ In this case, to the `B.name` will be mapped `A.first_name + " " + A.last_name`
 In this case, to the `C.name` will be mapped `A.last_name + " " + A.first_name`
 
 3. **Mapping suppression**
+
 For some purposes, it can be needed to suppress some mapping.
 Suppose we have class `A` with attributes `name` and `last_name`
 and class `B` with attributes `name` and `last_name`.
@@ -77,6 +86,6 @@ Attribute `A.last_name` will be not mapped thanks the suppression (lambda functi
 ## Installation
 
 * Download this project
-* Download it from Pypy -- TBD
+* Download fro Pypi: https://pypi.python.org/pypi/object-mapper
 
-#ENOJOY IT!
+### ENOJOY IT!
