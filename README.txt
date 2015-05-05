@@ -81,6 +81,22 @@ instance_b = mapper.map(A(), B)
 In this case, value of A.name will be copied into `B.name` automatically by the attribute name `name`.
 Attribute `A.last_name` will be not mapped thanks the suppression (lambda function is None).
 
+4. **Case insensitive mapping**
+
+Suppose we have class `A` with attributes `Name` and `Age` and
+class `B` with attributes `name` and `age` and we want to map `A` to `B` in a way
+`B.name` = `A.Name` and `B.age` = `A.Age`
+Initialization of the ObjectMapper will be:
+
+```python
+mapper = ObjectMapper()
+mapper.create_map(A, B)
+instance_b = mapper.map(A(), B, ignore_case=True)
+```
+
+In this case, the value of A.Name will be copied into B.name and
+the value of A.Age will be copied into B.age.
+
 **Note:** You can find more examples in tests package
 
 ## Installation
