@@ -24,7 +24,7 @@ class ObjectMapper:
             Initialization of the ObjectMapper will be:
             mapper = ObjectMapper()
             mapper.create_map(A, B)
-            instance_b = mapper.map(A())
+            instance_b = mapper.map(A(), B)
 
             In this case, value of A.name will be copied into B.name.
 
@@ -38,8 +38,8 @@ class ObjectMapper:
             mapper.create_map(A, B, {'name': lambda a : a.first_name + " " + a.last_name})
             mapper.create_map(A, C, {'name': lambda a : a.last_name + " " + a.first_name})
 
-            instance_b = mapper.map(A())
-            instance_c = mapper.map(A())
+            instance_b = mapper.map(A(), B)
+            instance_c = mapper.map(A(), C)
 
             In this case, to the B.name will be mapped A.first_name + " " + A.last_name
             In this case, to the C.name will be mapped A.last_name + " " + A.first_name
@@ -54,7 +54,7 @@ class ObjectMapper:
             mapper = ObjectMapper()
             mapper.create_map(A, B, {'last_name': None})
 
-            instance_b = mapper.map(A())
+            instance_b = mapper.map(A(), B)
 
             In this case, value of A.name will be copied into B.name automatically by the attribute name 'name'.
             Attribute A.last_name will be not mapped thanks the suppression (lambda function is None).
