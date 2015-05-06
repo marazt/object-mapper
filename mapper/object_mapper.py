@@ -122,7 +122,7 @@ class ObjectMapper:
         key_from = from_obj.__class__.__name__
         key_to = to_type.__name__
 
-        if (ignore_case):
+        if ignore_case:
             from_props = CaseDict(from_obj.__dict__)
             to_props = CaseDict(inst.__dict__)
         else:
