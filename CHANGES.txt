@@ -1,5 +1,8 @@
+1.0.2 - 2015/05/06
+* Added support for case insensitivity mapping by Rami Abughazaleh <rami@novastor.com>
+
 1.0.1 - 2015/02/19
-* Fix of the package informations
+* Fix of the package information
 
 1.0.0 - 2015/02/19
 * Initial version

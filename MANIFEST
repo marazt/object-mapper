@@ -2,6 +2,7 @@
 README.txt
 setup.py
 mapper\__init__.py
+mapper\casedict.py
 mapper\object_mapper.py
 mapper\object_mapper_exception.py
 tests\__init__.py
