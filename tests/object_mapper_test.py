@@ -184,3 +184,24 @@ class ObjectMapperTest(unittest.TestCase):
         self.assertEqual(result1.name, '', "Name must not be mapped")
         self.assertEqual(result1.date, from_class.date, "Date is set by property name")
         self.assertNotIn('surname', result1.__dict__, "To class must not contain surname")
+
+    def test_mapping_with_case_insensitivity(self):
+
+        #Arrange
+        class ToTestClass:
+            def __init__(self):
+                self.name = ''
+
+        class FromTestClass:
+            def __init__(self):
+                self.Name = "Name"
+
+        from_class = FromTestClass()
+        mapper = ObjectMapper()
+        mapper.create_map(FromTestClass, ToTestClass)
+
+        # Act
+        result = mapper.map(FromTestClass(), ToTestClass, ignore_case=True)
+
+        # Assert
+        self.assertEqual(result.name, from_class.Name, "Name mapping must be equal")
