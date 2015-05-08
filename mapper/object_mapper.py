@@ -107,17 +107,21 @@ class ObjectMapper:
             self.mappings[key_from] = {}
             self.mappings[key_from][key_to] = mapping
 
-    def map(self, from_obj, to_type, ignore_case=False):
+    def map(self, from_obj, to_type, ignore_case=False, allow_none=False):
         """Method for creating target object instance
 
         Args:
           from_obj: source object to be mapped from
           to_type: target type
           ignore_case: if set to true, ignores attribute case when performing the mapping
+          allow_none: if set to true, returns None if the source object is None; otherwise throws an exception
 
         Returns:
           Instance of the target class with mapped attributes
         """
+        if (from_obj is None) and allow_none:
+            return None
+
         inst = to_type()
         key_from = from_obj.__class__.__name__
         key_to = to_type.__name__
