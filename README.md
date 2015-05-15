@@ -13,7 +13,7 @@ marazt
 The MIT License (MIT)
 
 **Last updated**
-TBD
+15 May 2015
 
 **Package Download**
 https://pypi.python.org/pypi/object-mapper
@@ -21,7 +21,7 @@ https://pypi.python.org/pypi/object-mapper
 
 ## Versions
 
-**1.0.3 - TBD**
+**1.0.3 - 2015/05/15**
 
 * Added support for None mapping [@ramiabughazaleh](https://github.com/ramiabughazaleh)
 

@@ -10,7 +10,7 @@ setup(
     name="object-mapper",
 
     # Version number (initial):
-    version="1.0.2",
+    version="1.0.3",
 
     # Application author details:
     author="marazt",
