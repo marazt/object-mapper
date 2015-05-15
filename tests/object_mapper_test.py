@@ -98,9 +98,10 @@ class ObjectMapperTest(unittest.TestCase):
         msg = "Mapping for FromTestClass -> ToTestClass already exists"
         mapper = ObjectMapper()
 
+        mapper.create_map(FromTestClass, ToTestClass)
+
         # Act
         try:
-            mapper.create_map(FromTestClass, ToTestClass)
             mapper.create_map(FromTestClass, ToTestClass, {})
         except ObjectMapperException as ex:
             self.assertEqual(ex.message, msg, "Exception message must be correct")
@@ -129,7 +130,7 @@ class ObjectMapperTest(unittest.TestCase):
 
     def test_mapping_creation_none_target(self):
         # Arrange
-        exc = False
+        exc = None
         from_class = None
         mappings = \
             {
@@ -138,16 +139,35 @@ class ObjectMapperTest(unittest.TestCase):
             }
 
         mapper = ObjectMapper()
+        mapper.create_map(FromTestClass, ToTestClass, mappings)
 
         # Act
         try:
-            mapper.create_map(FromTestClass, ToTestClass, mappings)
             mapper.map(from_class, ToTestClass)
-        except AttributeError:
-            exc = True
+        except AttributeError as ex:
+            exc = ex
 
         # Assert
-        self.assertTrue(exc, "AttributeError must be thrown")
+        self.assertIsNotNone(exc, "AttributeError must be thrown")
+        self.assertEqual("'NoneType' object has no attribute '__dict__'", exc.message)
+
+    def test_mapping_with_none_source_and_allow_none_returns_none(self):
+        # Arrange
+        from_class = None
+        mappings = \
+            {
+                "name": lambda x: x.name + " " + x.surname,
+                "date": lambda x: str(x.date) + " Happy new year!"
+            }
+
+        mapper = ObjectMapper()
+        mapper.create_map(FromTestClass, ToTestClass, mappings)
+
+        # Act
+        result = mapper.map(from_class, ToTestClass, allow_none=True)
+
+        # Assert
+        self.assertEqual(None, result)
 
     def test_mapping_creation_no_mapping_defined(self):
         # Arrange

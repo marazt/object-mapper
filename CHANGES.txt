@@ -1,5 +1,8 @@
+1.0.3 - TBD
+* Added support for None mapping [@ramiabughazaleh](https://github.com/ramiabughazaleh)
+
 1.0.2 - 2015/05/06
-* Added support for case insensitivity mapping by Rami Abughazaleh <rami@novastor.com>
+* Added support for case insensitivity mapping [@ramiabughazaleh](https://github.com/ramiabughazaleh)
 
 1.0.1 - 2015/02/19
 * Fix of the package information
