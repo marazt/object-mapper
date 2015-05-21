@@ -1,5 +1,8 @@
-# Copyright (c) 2013 Optiflows
-# https://bitbucket.org/optiflowsrd/obelus/src/tip/obelus/casedict.py
+# coding=utf-8
+"""
+Copyright (c) 2013 Optiflows
+https://bitbucket.org/optiflowsrd/obelus/src/tip/obelus/casedict.py
+"""
 
 from collections import MutableMapping
 
@@ -45,9 +48,20 @@ class CaseDict(MutableMapping):
         return key.lower() in self._data
 
     def clear(self):
+        """
+        Removes all items from dictionary
+        """
         self._data.clear()
 
     def get(self, key, default=_sentinel):
+        """
+        Gets the value from the key.
+        If the key doesn't exist, the default value is returned, otherwise None.
+
+        :param key: The key
+        :param default: The default value
+        :return: The value
+        """
         tup = self._data.get(key.lower())
         if tup is not None:
             return tup[1]
@@ -57,6 +71,14 @@ class CaseDict(MutableMapping):
             return None
 
     def pop(self, key, default=_sentinel):
+        """
+        Removes the specified key and returns the corresponding value.
+        If key is not found, the default is returned if given, otherwise KeyError is raised.
+
+        :param key: The key
+        :param default: The default value
+        :return: The value
+        """
         if default is not _sentinel:
             tup = self._data.pop(key.lower(), default)
         else:

@@ -1,9 +1,12 @@
-# Copyright (C) 2015, marazt. All rights reserved.
+# coding=utf-8
+"""
+Copyright (C) 2015, marazt. All rights reserved.
+"""
 from mapper.object_mapper_exception import ObjectMapperException
 from casedict import CaseDict
 
 
-class ObjectMapper:
+class ObjectMapper(object):
     """
     Base class for mapping class attributes from one class to another one
     Supports mapping conversions too
@@ -72,8 +75,7 @@ class ObjectMapper:
             In this case, the value of A.Name will be copied into B.name and
             the value of A.Age will be copied into B.age.
 
-        Returns:
-            Instance of the ObjectMapper
+        :return: Instance of the ObjectMapper
         """
         # self.to_type = to_type
         self.mappings = {}
@@ -82,14 +84,12 @@ class ObjectMapper:
     def create_map(self, type_from, type_to, mapping=None):
         """Method for adding mapping definitions
 
-        Args:
-            type_from: source type
-            type_to: target type
-            mapping: dictionary of mapping definitions in a form {'target_property_name',
-            lambda function from rhe source}
+        :param type_from: source type
+        :param type_to: target type
+        :param mapping: dictionary of mapping definitions in a form {'target_property_name',
+                        lambda function from rhe source}
 
-        Returns:
-
+        :return: None
         """
         key_from = type_from.__name__
         key_to = type_to.__name__
@@ -110,14 +110,12 @@ class ObjectMapper:
     def map(self, from_obj, to_type, ignore_case=False, allow_none=False):
         """Method for creating target object instance
 
-        Args:
-          from_obj: source object to be mapped from
-          to_type: target type
-          ignore_case: if set to true, ignores attribute case when performing the mapping
-          allow_none: if set to true, returns None if the source object is None; otherwise throws an exception
+        :param from_obj: source object to be mapped from
+        :param to_type: target type
+        :param ignore_case: if set to true, ignores attribute case when performing the mapping
+        :param allow_none: if set to true, returns None if the source object is None; otherwise throws an exception
 
-        Returns:
-          Instance of the target class with mapped attributes
+        :return: Instance of the target class with mapped attributes
         """
         if (from_obj is None) and allow_none:
             return None
