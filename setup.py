@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Package setup configuration needed for correct package creation
 Taken from: https://www.digitalocean.com/community/tutorials/how-to-package-and-distribute-python-applications

@@ -1,4 +1,7 @@
-# Copyright (C) 2015, marazt. All rights reserved.
+# coding=utf-8
+"""
+Copyright (C) 2015, marazt. All rights reserved.
+"""
 import unittest
 
 from datetime import datetime
@@ -6,29 +9,33 @@ from mapper.object_mapper import ObjectMapper
 from mapper.object_mapper_exception import ObjectMapperException
 
 
-class ToTestClass:
+class ToTestClass(object):
+    """ To Test Class """
     def __init__(self):
         self.name = ""
         self.date = ""
         pass
 
 
-class ToTestClassTwo:
+class ToTestClassTwo(object):
+    """ To Test Class Two """
     def __init__(self):
         self.all = ""
         pass
 
 
-class ToTestClassEmpty:
+class ToTestClassEmpty(object):
+    """ To Test Class Empty """
     def __init__(self):
         pass
 
 
-class FromTestClass:
+class FromTestClass(object):
+    """ From Test Class """
     def __init__(self):
         self.name = "Igor"
         self.surname = "Hnizdo"
-        self.date = datetime(2015, 1, 1, 0, 0)
+        self.date = datetime(2015, 1, 1)
         pass
 
 
@@ -37,10 +44,8 @@ class ObjectMapperTest(unittest.TestCase):
     Unit tests for the `ObjectMapper` module.
     """
 
-    def setUp(self):
-        pass
-
     def test_mapping_creation_without_mappings_correct(self):
+        """ Test mapping creation without mappings """
 
         # Arrange
         from_class = FromTestClass()
@@ -57,6 +62,7 @@ class ObjectMapperTest(unittest.TestCase):
         self.assertNotIn("surname", result.__dict__, "To class must not contain surname")
 
     def test_mapping_creation_with_mappings_correct(self):
+        """ Test mapping creation with mappings """
 
         # Arrange
         from_class = FromTestClass()
@@ -92,6 +98,7 @@ class ObjectMapperTest(unittest.TestCase):
         self.assertTrue(len(result3.__dict__) == 0, "There must be no attributes")
 
     def test_mapping_creation_duplicate_mapping(self):
+        """ Test mapping creation with duplicate mappings """
 
         # Arrange
         exc = False
@@ -111,6 +118,7 @@ class ObjectMapperTest(unittest.TestCase):
         self.assertTrue(exc, "Exception must be thrown")
 
     def test_mapping_creation_invalid_mapping_function(self):
+        """ Test mapping creation with invalid mapping function """
 
         # Arrange
         exc = False
@@ -129,6 +137,8 @@ class ObjectMapperTest(unittest.TestCase):
         self.assertTrue(exc, "Exception must be thrown")
 
     def test_mapping_creation_none_target(self):
+        """ Test mapping creation with none target """
+
         # Arrange
         exc = None
         from_class = None
@@ -152,6 +162,8 @@ class ObjectMapperTest(unittest.TestCase):
         self.assertEqual("'NoneType' object has no attribute '__dict__'", exc.message)
 
     def test_mapping_with_none_source_and_allow_none_returns_none(self):
+        """ Test mapping with none source and allow none returns none """
+
         # Arrange
         from_class = None
         mappings = \
@@ -170,6 +182,8 @@ class ObjectMapperTest(unittest.TestCase):
         self.assertEqual(None, result)
 
     def test_mapping_creation_no_mapping_defined(self):
+        """ Test mapping creation with no mapping defined """
+
         # Arrange
         exc = False
         msg = "No mapping defined for FromTestClass -> ToTestClass"
@@ -188,6 +202,7 @@ class ObjectMapperTest(unittest.TestCase):
         self.assertTrue(exc, "Exception must be thrown")
 
     def test_mapping_creation_with_mapping_suppression(self):
+        """ Test mapping creation with mapping suppression """
 
         # Arrange
         from_class = FromTestClass()
@@ -205,13 +220,16 @@ class ObjectMapperTest(unittest.TestCase):
         self.assertNotIn("surname", result1.__dict__, "To class must not contain surname")
 
     def test_mapping_with_case_insensitivity(self):
+        """ Test mapping with case insensitivity """
 
         # Arrange
-        class ToTestClass2:
+        class ToTestClass2(object):
+            """ To Test Class 2 """
             def __init__(self):
                 self.name = ""
 
-        class FromTestClass2:
+        class FromTestClass2(object):
+            """ From Test Class 2 """
             def __init__(self):
                 self.Name = "Name"
 
@@ -224,3 +242,22 @@ class ObjectMapperTest(unittest.TestCase):
 
         # Assert
         self.assertEqual(result.name, from_class.Name, "Name mapping must be equal")
+
+    def test_mapping_creation_with_partial_mapping_correct(self):
+        """ Test mapping creation with partial mapping """
+
+        # Arrange
+        from_class = FromTestClass()
+        mapper = ObjectMapper()
+        mapper.create_map(FromTestClass, ToTestClass,
+                          {"name": lambda x: "{0} {1}".format(x.name, x.surname)})
+
+        # Act
+        result1 = mapper.map(from_class, ToTestClass)
+
+        # Assert
+        self.assertTrue(isinstance(result1, ToTestClass), "Type must be ToTestClass")
+        self.assertEqual(result1.name, "{0} {1}".format(from_class.name, from_class.surname),
+                         "Name mapping must be equal")
+        self.assertEqual(result1.date, from_class.date, "Date mapping must be equal")
+        self.assertNotIn("surname", result1.__dict__, "To class must not contain surname")
