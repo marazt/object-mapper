@@ -111,7 +111,7 @@ class ObjectMapperTest(unittest.TestCase):
         try:
             mapper.create_map(FromTestClass, ToTestClass, {})
         except ObjectMapperException as ex:
-            self.assertEqual(ex.message, msg, "Exception message must be correct")
+            self.assertEqual(str(ex), msg, "Exception message must be correct")
             exc = True
 
         # Assert
@@ -130,7 +130,7 @@ class ObjectMapperTest(unittest.TestCase):
         try:
             mapper.map(FromTestClass(), ToTestClass)
         except ObjectMapperException as ex:
-            self.assertEqual(ex.message, msg, "Exception message must be correct")
+            self.assertEqual(str(ex), msg, "Exception message must be correct")
             exc = True
 
         # Assert
@@ -159,7 +159,7 @@ class ObjectMapperTest(unittest.TestCase):
 
         # Assert
         self.assertIsNotNone(exc, "AttributeError must be thrown")
-        self.assertEqual("'NoneType' object has no attribute '__dict__'", exc.message)
+        self.assertEqual("'NoneType' object has no attribute '__dict__'", str(exc))
 
     def test_mapping_with_none_source_and_allow_none_returns_none(self):
         """ Test mapping with none source and allow none returns none """
@@ -195,7 +195,7 @@ class ObjectMapperTest(unittest.TestCase):
         try:
             mapper.map(from_class, ToTestClass)
         except ObjectMapperException as ex:
-            self.assertEqual(ex.message, msg, "Exception message must be correct")
+            self.assertEqual(str(ex), msg, "Exception message must be correct")
             exc = True
 
         # Assert

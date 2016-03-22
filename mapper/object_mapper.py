@@ -3,7 +3,7 @@
 Copyright (C) 2015, marazt. All rights reserved.
 """
 from mapper.object_mapper_exception import ObjectMapperException
-from casedict import CaseDict
+from mapper.casedict import CaseDict
 
 
 class ObjectMapper(object):
