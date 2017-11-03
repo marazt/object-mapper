@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Install Universal Wheels
 pip install wheel
 python setup.py bdist_wheel --universal
