@@ -128,6 +128,6 @@ It helps you to create objects between project layers (data layer, service layer
 ## Installation
 
 * Download this project
-* Download for Pypi: https://pypi.python.org/pypi/object-mapper
+* Download from Pypi: https://pypi.python.org/pypi/object-mapper
 
 ### ENJOY IT!
