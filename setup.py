@@ -25,7 +25,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.0.4',
+    version='1.0.5',
 
     description="ObjectMapper is a class for automatic object mapping. It helps you to create objects between\
                 project layers (data layer, service layer, view) in a simple, transparent way.",

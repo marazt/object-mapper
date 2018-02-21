@@ -1,4 +1,4 @@
 # coding=utf-8
 """
-Copyright (C) 2015, marazt. All rights reserved.
+Copyright (C) 2018, marazt. All rights reserved.
 """
