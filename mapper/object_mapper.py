@@ -4,7 +4,7 @@ Copyright (C) 2015, marazt. All rights reserved.
 """
 from mapper.object_mapper_exception import ObjectMapperException
 from mapper.casedict import CaseDict
-
+from inspect import getmembers, isroutine
 
 class ObjectMapper(object):
     """
@@ -119,17 +119,28 @@ class ObjectMapper(object):
         """
         if (from_obj is None) and allow_none:
             return None
+        else:
+            # one of the tests is explicitly checking for an attribute error on __dict__ if it's not set
+            from_obj.__dict__
 
         inst = to_type()
         key_from = from_obj.__class__.__name__
         key_to = to_type.__name__
 
+        def not_private(s): return not s.startswith('_')
+
+        from_obj_attributes = getmembers(from_obj, lambda a: not isroutine(a))
+        from_obj_dict = {k: v for k, v in from_obj_attributes if not_private(k)}
+
+        to_obj_attributes = getmembers(inst, lambda a: not isroutine(a))
+        to_obj_dict = {k: v for k, v in to_obj_attributes if not_private(k)}
+
         if ignore_case:
-            from_props = CaseDict(from_obj.__dict__)
-            to_props = CaseDict(inst.__dict__)
+            from_props = CaseDict(from_obj_dict)
+            to_props = CaseDict(to_obj_dict)
         else:
-            from_props = from_obj.__dict__
-            to_props = inst.__dict__
+            from_props = from_obj_dict
+            to_props = to_obj_dict
 
         for prop in to_props:
             if self.mappings is not None \

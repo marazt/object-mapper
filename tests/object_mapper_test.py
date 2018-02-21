@@ -261,3 +261,43 @@ class ObjectMapperTest(unittest.TestCase):
                          "Name mapping must be equal")
         self.assertEqual(result1.date, from_class.date, "Date mapping must be equal")
         self.assertNotIn("surname", result1.__dict__, "To class must not contain surname")
+
+    def test_mapping_creation_with_custom_dir(self):
+        """ Test mapping to objects with custom __dir__ behaviour """
+
+        # Arrange
+        _propNames = ['name', 'date']
+        class ToCustomDirClass(object):
+            def __dir__(self):
+                props = list(self.__dict__.keys())
+                props.extend(_propNames)
+                return props
+
+            def __init__(self):
+                self.props = {k: None for k in _propNames}
+
+            def __getattribute__(self, name):
+                if name in _propNames:
+                    return self.props[name]
+                else:
+                    return object.__getattribute__(self, name)
+
+            def __setattr__(self, name, value):
+                if name in _propNames:
+                    self.props[name] = value
+                else:
+                    return object.__setattr__(self, name, value)
+
+        # Arrange
+        from_class = FromTestClass()
+        mapper = ObjectMapper()
+        mapper.create_map(FromTestClass, ToCustomDirClass)
+
+        # Act
+        result = mapper.map(FromTestClass(), ToCustomDirClass)
+
+        # Assert
+        self.assertTrue(isinstance(result, ToCustomDirClass), "Target types must be same")
+        self.assertEqual(result.name, from_class.name, "Name mapping must be equal")
+        self.assertEqual(result.date, from_class.date, "Date mapping must be equal")
+        self.assertNotIn("surname", dir(result), "To class must not contain surname")
