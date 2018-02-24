@@ -1,7 +1,7 @@
 # Object Mapper
 
 **Version**
-1.0.4
+1.0.5
 
 **Author**
 marazt
@@ -20,6 +20,10 @@ https://pypi.python.org/pypi/object-mapper
 ---
 
 ## Versions
+
+**1.0.5 - 2018/02/21**
+
+- Support for dynamic properties [@nijm](https://github.com/nijm)
 
 **1.0.4 - 2017/11/03**
 
