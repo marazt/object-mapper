@@ -55,3 +55,4 @@ target/
 
 # Idea
 .idea
+.python-version
