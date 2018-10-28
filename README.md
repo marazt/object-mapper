@@ -3,7 +3,7 @@
 # Object Mapper
 
 **Version**
-1.0.5
+1.0.6
 
 **Author**
 marazt
@@ -15,7 +15,7 @@ marazt
 The MIT License (MIT)
 
 **Last updated**
-21 February 2018
+28 October 2018
 
 **Package Download**
 https://pypi.python.org/pypi/object-mapper
@@ -23,9 +23,13 @@ https://pypi.python.org/pypi/object-mapper
 
 ## Versions
 
+**1.0.6 - 2018/10/28**
+
+* Added ability to specify excluded fields, thanks [@uralov](https://github.com/uralov)
+
 **1.0.5 - 2018/02/21**
 
-- Support for dynamic properties [@nijm](https://github.com/nijm)
+* Support for dynamic properties [@nijm](https://github.com/nijm)
 
 **1.0.4 - 2017/11/03**
 

@@ -1,7 +1,7 @@
 Object Mapper
 =============
 
-**Version** 1.0.5
+**Version** 1.0.6
 
 **Author** marazt
 
@@ -9,12 +9,16 @@ Object Mapper
 
 **License** The MIT License (MIT)
 
-**Last updated** 21 February 2018
+**Last updated** 28 October 2018
 
 **Package Download** https://pypi.python.org/pypi/object-mapper ---
 
 Versions
 --------
+
+**1.0.6 - 2018/10/28**
+
+- Added ability to specify excluded fields, thanks [@uralov](https://github.com/uralov)
 
 **1.0.5 - 2018/02/21**
 
