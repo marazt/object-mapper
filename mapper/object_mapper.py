@@ -114,6 +114,7 @@ class ObjectMapper(object):
         :param to_type: target type
         :param ignore_case: if set to true, ignores attribute case when performing the mapping
         :param allow_none: if set to true, returns None if the source object is None; otherwise throws an exception
+        :param excluded: A list of fields to exclude when performing the mapping
 
         :return: Instance of the target class with mapped attributes
         """
