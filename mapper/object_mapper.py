@@ -107,7 +107,7 @@ class ObjectMapper(object):
             self.mappings[key_from] = {}
             self.mappings[key_from][key_to] = mapping
 
-    def map(self, from_obj, to_type, ignore_case=False, allow_none=False):
+    def map(self, from_obj, to_type, ignore_case=False, allow_none=False, excluded=None):
         """Method for creating target object instance
 
         :param from_obj: source object to be mapped from
@@ -127,10 +127,15 @@ class ObjectMapper(object):
         key_from = from_obj.__class__.__name__
         key_to = to_type.__name__
 
-        def not_private(s): return not s.startswith('_')
+        def not_private(s):
+            return not s.startswith('_')
+
+        def not_excluded(s):
+            return not (excluded and s in excluded)
 
         from_obj_attributes = getmembers(from_obj, lambda a: not isroutine(a))
-        from_obj_dict = {k: v for k, v in from_obj_attributes if not_private(k)}
+        from_obj_dict = {k: v for k, v in from_obj_attributes
+                         if not_private(k) and not_excluded(k)}
 
         to_obj_attributes = getmembers(inst, lambda a: not isroutine(a))
         to_obj_dict = {k: v for k, v in to_obj_attributes if not_private(k)}

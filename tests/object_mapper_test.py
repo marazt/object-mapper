@@ -301,3 +301,20 @@ class ObjectMapperTest(unittest.TestCase):
         self.assertEqual(result.name, from_class.name, "Name mapping must be equal")
         self.assertEqual(result.date, from_class.date, "Date mapping must be equal")
         self.assertNotIn("surname", dir(result), "To class must not contain surname")
+
+    def test_mapping_excluded_field(self):
+        """Test mapping with excluded fields"""
+        #Arrange
+        from_class = FromTestClass()
+        mapper = ObjectMapper()
+        mapper.create_map(FromTestClass, ToTestClass)
+
+        #Act
+        result = mapper.map(FromTestClass(), ToTestClass, excluded=['date'])
+
+        #Assert
+        print(result)      
+        self.assertTrue(isinstance(result, ToTestClass), "Type must be ToTestClass")
+        self.assertEqual(result.name, from_class.name, "Name mapping must be equal")
+        self.assertEqual(result.date, '', "Date mapping must be equal")
+        self.assertNotIn("surname", result.__dict__, "To class must not contain surname")
