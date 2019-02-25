@@ -128,8 +128,8 @@ class ObjectMapper(object):
             from_obj.__dict__
 
         inst = to_type()
-        key_from = from_obj.__class__.__name__
-        key_to = to_type.__name__
+        key_from = from_obj.__class__
+        key_to = to_type
 
         def not_private(s):
             return not s.startswith('_')
