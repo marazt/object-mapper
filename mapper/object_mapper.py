@@ -2,9 +2,12 @@
 """
 Copyright (C) 2015, marazt. All rights reserved.
 """
-from mapper.object_mapper_exception import ObjectMapperException
+from enum import Enum
+from inspect import getmembers, isroutine, isclass
+
 from mapper.casedict import CaseDict
-from inspect import getmembers, isroutine
+from mapper.object_mapper_exception import ObjectMapperException
+
 
 class ObjectMapper(object):
     """
@@ -91,8 +94,8 @@ class ObjectMapper(object):
 
         :return: None
         """
-        key_from = type_from.__name__
-        key_to = type_to.__name__
+        key_from = type_from
+        key_to = type_to
 
         if mapping is None:
             mapping = {}
@@ -165,7 +168,17 @@ class ObjectMapper(object):
 
                 else:
                     # try find property with the same name in the source
-                    if prop in from_props:
+                    if prop not in from_props:
+                        continue
+
+                    prop_to_type = type(from_props[prop])
+
+                    if isclass(prop_to_type) and \
+                            not issubclass(prop_to_type, Enum) and \
+                            prop_to_type is not type(None) and \
+                            not __builtins__.get(type(from_props[prop]).__name__):
+                        self.map(from_props[prop], key_to, allow_none=allow_none)
+                    else:
                         setattr(inst, prop, from_props[prop])
                         # case when target attribute is not mapped (can be extended)
             else:
