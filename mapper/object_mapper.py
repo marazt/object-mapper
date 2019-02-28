@@ -2,8 +2,7 @@
 """
 Copyright (C) 2015, marazt. All rights reserved.
 """
-from enum import Enum
-from inspect import getmembers, isroutine, isclass
+from inspect import getmembers, isroutine
 
 from mapper.casedict import CaseDict
 from mapper.object_mapper_exception import ObjectMapperException
@@ -179,8 +178,8 @@ class ObjectMapper(object):
                     #         not __builtins__.get(type(from_props[prop]).__name__):
                     #     self.map(from_props[prop], key_to, allow_none=allow_none)
                     # else:
-                        setattr(inst, prop, from_props[prop])
-                        # case when target attribute is not mapped (can be extended)
+                    setattr(inst, prop, from_props[prop])
+                    # case when target attribute is not mapped (can be extended)
             else:
                 raise ObjectMapperException("No mapping defined for {0} -> {1}".format(key_from, key_to))
 
