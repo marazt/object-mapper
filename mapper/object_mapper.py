@@ -171,14 +171,14 @@ class ObjectMapper(object):
                     if prop not in from_props:
                         continue
 
-                    prop_to_type = type(from_props[prop])
+                    # prop_to_type = type(from_props[prop])
 
-                    if isclass(prop_to_type) and \
-                            not issubclass(prop_to_type, Enum) and \
-                            prop_to_type is not type(None) and \
-                            not __builtins__.get(type(from_props[prop]).__name__):
-                        self.map(from_props[prop], key_to, allow_none=allow_none)
-                    else:
+                    # if isclass(prop_to_type) and \
+                    #         not issubclass(prop_to_type, Enum) and \
+                    #         prop_to_type is not type(None) and \
+                    #         not __builtins__.get(type(from_props[prop]).__name__):
+                    #     self.map(from_props[prop], key_to, allow_none=allow_none)
+                    # else:
                         setattr(inst, prop, from_props[prop])
                         # case when target attribute is not mapped (can be extended)
             else:
