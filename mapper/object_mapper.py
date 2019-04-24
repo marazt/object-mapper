@@ -102,7 +102,9 @@ class ObjectMapper(object):
         if key_from in self.mappings:
             inner_map = self.mappings[key_from]
             if key_to in inner_map:
-                raise ObjectMapperException("Mapping for {0} -> {1} already exists".format(key_from, key_to))
+                raise ObjectMapperException(
+                    "Mapping for {0}.{1} -> {2}.{3} already exists".format(key_from.__module__, key_from.__name__,
+                                                                   key_to.__module__, key_to.__name__))
             else:
                 inner_map[key_to] = mapping
         else:
@@ -171,6 +173,8 @@ class ObjectMapper(object):
                         setattr(inst, prop, from_props[prop])
                         # case when target attribute is not mapped (can be extended)
             else:
-                raise ObjectMapperException("No mapping defined for {0} -> {1}".format(key_from, key_to))
+                raise ObjectMapperException(
+                    "No mapping defined for {0}.{1} -> {2}.{3}".format(key_from.__module__, key_from.__name__,
+                                                                       key_to.__module__, key_to.__name__))
 
         return inst
