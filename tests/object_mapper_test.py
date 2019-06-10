@@ -30,6 +30,29 @@ class ToTestClassEmpty(object):
         pass
 
 
+class ToTestClassEmpty(object):
+    """ To Test Class Empty """
+    def __init__(self):
+        pass
+
+
+class ToTestComplexClass(object):
+    """ To Test Class """
+    def __init__(self):
+        self.name = ""
+        self.date = ""
+        self.student = None
+        self.knows = None
+        pass
+
+
+class ToTestComplexChildClass(object):
+    """ To Test Class """
+    def __init__(self):
+        self.full_name = ""
+        pass
+
+
 class FromTestClass(object):
     """ From Test Class """
     def __init__(self):
@@ -37,6 +60,25 @@ class FromTestClass(object):
         self.surname = "Hnizdo"
         self.date = datetime(2015, 1, 1)
         pass
+
+
+class FromTestComplexChildClass(object):
+    """ From Test Class """
+    def __init__(self, full_name="Eda Soucek"):
+        self.full_name = full_name
+        pass
+
+
+class FromTestComplexClass(object):
+    """ From Test Class """
+    def __init__(self):
+        self.name = "Igor"
+        self.surname = "Hnizdo"
+        self.date = datetime(2015, 1, 1)
+        self.student = FromTestComplexChildClass()
+        self.knows = [FromTestComplexChildClass('Mrs. Souckova'), FromTestComplexChildClass('The schoolmaster')]
+        pass
+
 
 
 class ObjectMapperTest(unittest.TestCase):
@@ -53,7 +95,7 @@ class ObjectMapperTest(unittest.TestCase):
         mapper.create_map(FromTestClass, ToTestClass)
 
         # Act
-        result = mapper.map(FromTestClass(), ToTestClass)
+        result = mapper.map(FromTestClass())
 
         # Assert
         self.assertTrue(isinstance(result, ToTestClass), "Target types must be same")
@@ -102,7 +144,7 @@ class ObjectMapperTest(unittest.TestCase):
 
         # Arrange
         exc = False
-        msg = "Mapping for FromTestClass -> ToTestClass already exists"
+        msg = "Mapping for tests.object_mapper_test.FromTestClass -> tests.object_mapper_test.ToTestClass already exists"
         mapper = ObjectMapper()
 
         mapper.create_map(FromTestClass, ToTestClass)
@@ -128,7 +170,7 @@ class ObjectMapperTest(unittest.TestCase):
 
         # Act
         try:
-            mapper.map(FromTestClass(), ToTestClass)
+            mapper.map(FromTestClass())
         except ObjectMapperException as ex:
             self.assertEqual(str(ex), msg, "Exception message must be correct")
             exc = True
@@ -153,7 +195,7 @@ class ObjectMapperTest(unittest.TestCase):
 
         # Act
         try:
-            mapper.map(from_class, ToTestClass)
+            mapper.map(from_class)
         except AttributeError as ex:
             exc = ex
 
@@ -176,7 +218,7 @@ class ObjectMapperTest(unittest.TestCase):
         mapper.create_map(FromTestClass, ToTestClass, mappings)
 
         # Act
-        result = mapper.map(from_class, ToTestClass, allow_none=True)
+        result = mapper.map(from_class, allow_none=True)
 
         # Assert
         self.assertEqual(None, result)
@@ -186,14 +228,14 @@ class ObjectMapperTest(unittest.TestCase):
 
         # Arrange
         exc = False
-        msg = "No mapping defined for FromTestClass -> ToTestClass"
+        msg = "No mapping defined for tests.object_mapper_test.FromTestClass"
         from_class = FromTestClass()
 
         mapper = ObjectMapper()
 
         # Act
         try:
-            mapper.map(from_class, ToTestClass)
+            mapper.map(from_class)
         except ObjectMapperException as ex:
             self.assertEqual(str(ex), msg, "Exception message must be correct")
             exc = True
@@ -211,7 +253,7 @@ class ObjectMapperTest(unittest.TestCase):
                           {"name": None})
 
         # Act
-        result1 = mapper.map(from_class, ToTestClass)
+        result1 = mapper.map(from_class)
 
         # Assert
         self.assertTrue(isinstance(result1, ToTestClass), "Type must be ToTestClass")
@@ -238,7 +280,7 @@ class ObjectMapperTest(unittest.TestCase):
         mapper.create_map(FromTestClass2, ToTestClass2)
 
         # Act
-        result = mapper.map(FromTestClass2(), ToTestClass2, ignore_case=True)
+        result = mapper.map(FromTestClass2(), ignore_case=True)
 
         # Assert
         self.assertEqual(result.name, from_class.Name, "Name mapping must be equal")
@@ -253,7 +295,7 @@ class ObjectMapperTest(unittest.TestCase):
                           {"name": lambda x: "{0} {1}".format(x.name, x.surname)})
 
         # Act
-        result1 = mapper.map(from_class, ToTestClass)
+        result1 = mapper.map(from_class)
 
         # Assert
         self.assertTrue(isinstance(result1, ToTestClass), "Type must be ToTestClass")
@@ -294,7 +336,7 @@ class ObjectMapperTest(unittest.TestCase):
         mapper.create_map(FromTestClass, ToCustomDirClass)
 
         # Act
-        result = mapper.map(FromTestClass(), ToCustomDirClass)
+        result = mapper.map(FromTestClass())
 
         # Assert
         self.assertTrue(isinstance(result, ToCustomDirClass), "Target types must be same")
@@ -310,7 +352,7 @@ class ObjectMapperTest(unittest.TestCase):
         mapper.create_map(FromTestClass, ToTestClass)
 
         #Act
-        result = mapper.map(FromTestClass(), ToTestClass, excluded=['date'])
+        result = mapper.map(FromTestClass(), excluded=['date'])
 
         #Assert
         print(result)      
@@ -318,3 +360,26 @@ class ObjectMapperTest(unittest.TestCase):
         self.assertEqual(result.name, from_class.name, "Name mapping must be equal")
         self.assertEqual(result.date, '', "Date mapping must be equal")
         self.assertNotIn("surname", result.__dict__, "To class must not contain surname")
+
+    def test_mapping_creation_complex_without_mappings_correct(self):
+        """ Test mapping creation for complex class without mappings """
+
+        # Arrange
+        from_class = FromTestComplexClass()
+        mapper = ObjectMapper()
+        mapper.create_map(FromTestComplexClass, ToTestComplexClass)
+        mapper.create_map(FromTestComplexChildClass, ToTestComplexChildClass)
+
+        # Act
+        result = mapper.map(from_class)
+
+        # Assert
+        self.assertTrue(isinstance(result, ToTestComplexClass), "Target types must be same")
+        self.assertTrue(isinstance(result.student, ToTestComplexChildClass), "Target types must be same")
+        self.assertEqual(result.name, from_class.name, "Name mapping must be equal")
+        self.assertEqual(result.date, from_class.date, "Date mapping must be equal")
+        self.assertEqual(result.student.full_name, from_class.student.full_name, "StudentName mapping must be equal")
+        self.assertEqual(len(result.knows), len(from_class.knows), "number of entries must be the same for Knows")
+        self.assertTrue(all(isinstance(k, ToTestComplexChildClass) for k in result.knows), "Children target types must be same")
+        self.assertEqual(result.knows[0].full_name, from_class.knows[0].full_name, "StudentName(0) mapping must be equal")
+        self.assertEqual(result.knows[1].full_name, from_class.knows[1].full_name, "StudentName(1) mapping must be equal")
