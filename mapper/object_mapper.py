@@ -120,7 +120,7 @@ class ObjectMapper(object):
             self.mappings[key_from][key_to] = (type_to, mapping)
 
 
-    def map(self, from_obj, to_type: type=type(None), ignore_case=False, allow_none=False, excluded=None, allow_unmapped=False):
+    def map(self, from_obj, to_type: type=type(None), ignore_case: bool=False, allow_none: bool=False, excluded: List[str]=None, included: List[str]=None, allow_unmapped: bool=False):
         """Method for creating target object instance
 
         :param from_obj: source object to be mapped from
@@ -128,6 +128,7 @@ class ObjectMapper(object):
         :param ignore_case: if set to true, ignores attribute case when performing the mapping
         :param allow_none: if set to true, returns None if the source object is None; otherwise throws an exception
         :param excluded: A list of fields to exclude when performing the mapping
+        :param included: A list of fields to force inclusion when performing the mapping
         :param allow_unmapped: if set to true, copy over the non-primitive object that didn't have a mapping defined; otherwise exception
 
         :return: Instance of the target class with mapped attributes
@@ -172,12 +173,14 @@ class ObjectMapper(object):
         def not_excluded(s):
             return not (excluded and s in excluded)
 
+        def is_included(s):
+            return included and s in included
+
         from_obj_attributes = getmembers(from_obj, lambda a: not isroutine(a))
-        from_obj_dict = {k: v for k, v in from_obj_attributes
-                         if not_private(k) and not_excluded(k)}
+        from_obj_dict = {k: v for k, v in from_obj_attributes}
 
         to_obj_attributes = getmembers(inst, lambda a: not isroutine(a))
-        to_obj_dict = {k: v for k, v in to_obj_attributes if not_private(k)}
+        to_obj_dict = {k: v for k, v in to_obj_attributes if not_excluded(k) and (not_private(k) or is_included(k))}
 
         if ignore_case:
             from_props = CaseDict(from_obj_dict)
@@ -192,7 +195,7 @@ class ObjectMapper(object):
                 key_from_child = f"{key_from_child_cls.__module__}.{key_from_child_cls.__name__}"
                 if (key_from_child in self.mappings):
                     # if key_to has a mapping defined, nests the map() call
-                    return self.map(o, type(None), ignore_case, allow_none, excluded, allow_unmapped)
+                    return self.map(o, type(None), ignore_case, allow_none, excluded, included, allow_unmapped)
                 elif (key_from_child_cls in ObjectMapper.primitive_types):
                     # allow primitive types without mapping
                     return o
@@ -209,7 +212,7 @@ class ObjectMapper(object):
             
             val = None
             suppress_mapping = False
-            
+
             # mapping function take precedence over complex type mapping
             if custom_mappings is not None and prop in custom_mappings:
                 try:

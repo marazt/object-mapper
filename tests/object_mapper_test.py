@@ -14,6 +14,7 @@ class ToTestClass(object):
     def __init__(self):
         self.name = ""
         self.date = ""
+        self._actor_name = ""
         pass
 
 
@@ -59,6 +60,7 @@ class FromTestClass(object):
         self.name = "Igor"
         self.surname = "Hnizdo"
         self.date = datetime(2015, 1, 1)
+        self._actor_name = "Jan Triska"
         pass
 
 
@@ -101,6 +103,7 @@ class ObjectMapperTest(unittest.TestCase):
         self.assertTrue(isinstance(result, ToTestClass), "Target types must be same")
         self.assertEqual(result.name, from_class.name, "Name mapping must be equal")
         self.assertEqual(result.date, from_class.date, "Date mapping must be equal")
+        self.assertEqual(result._actor_name, "", "Private should not be copied by default")
         self.assertNotIn("surname", result.__dict__, "To class must not contain surname")
 
     def test_mapping_creation_with_mappings_correct(self):
@@ -359,6 +362,24 @@ class ObjectMapperTest(unittest.TestCase):
         self.assertTrue(isinstance(result, ToTestClass), "Type must be ToTestClass")
         self.assertEqual(result.name, from_class.name, "Name mapping must be equal")
         self.assertEqual(result.date, '', "Date mapping must be equal")
+        self.assertNotIn("surname", result.__dict__, "To class must not contain surname")
+
+    def test_mapping_included_field(self):
+        """Test mapping with included fields"""
+        #Arrange
+        from_class = FromTestClass()
+        mapper = ObjectMapper()
+        mapper.create_map(FromTestClass, ToTestClass)
+
+        #Act
+        result = mapper.map(FromTestClass(), excluded=['name'], included=['name', '_actor_name'])
+
+        #Assert
+        print(result)      
+        self.assertTrue(isinstance(result, ToTestClass), "Type must be ToTestClass")
+        self.assertEqual(result.name, '', "Name must not be copied despite of inclusion, as exclusion take precedence")
+        self.assertEqual(result.date, from_class.date, "Date mapping must be equal")
+        self.assertEqual(result._actor_name, from_class._actor_name, "Private is copied if explicitly included")
         self.assertNotIn("surname", result.__dict__, "To class must not contain surname")
 
     def test_mapping_creation_complex_without_mappings_correct(self):
