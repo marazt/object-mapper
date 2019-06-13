@@ -382,6 +382,24 @@ class ObjectMapperTest(unittest.TestCase):
         self.assertEqual(result._actor_name, from_class._actor_name, "Private is copied if explicitly included")
         self.assertNotIn("surname", result.__dict__, "To class must not contain surname")
 
+    def test_mapping_included_field_by_mapping(self):
+        """Test mapping with included fields by mapping"""
+        #Arrange
+        from_class = FromTestClass()
+        mapper = ObjectMapper()
+        mapper.create_map(FromTestClass, ToTestClass, mapping={'_actor_name': lambda o: f"{o.name} acted by {o._actor_name}"})
+
+        #Act
+        result = mapper.map(FromTestClass())
+
+        #Assert
+        print(result)      
+        self.assertTrue(isinstance(result, ToTestClass), "Type must be ToTestClass")
+        self.assertEqual(result.name, from_class.name, "Name mapping must be equal")
+        self.assertEqual(result.date, from_class.date, "Date mapping must be equal")
+        self.assertEqual(result._actor_name, f"{from_class.name} acted by {from_class._actor_name}", "Private is copied if explicitly mapped")
+        self.assertNotIn("surname", result.__dict__, "To class must not contain surname")
+
     def test_mapping_creation_complex_without_mappings_correct(self):
         """ Test mapping creation for complex class without mappings """
 

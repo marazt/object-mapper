@@ -101,8 +101,10 @@ class ObjectMapper(object):
 
         if (type(type_from) is not type):
             raise ObjectMapperException(f"type_from must be a type")
+
         if (type(type_to) is not type):
             raise ObjectMapperException(f"type_to must be a type")
+
         if (mapping is not None and not isinstance(mapping, Dict)):
             raise ObjectMapperException(f"mapping, if provided, must be a Dict type")
 
@@ -162,7 +164,7 @@ class ObjectMapper(object):
                 raise ObjectMapperException(f"No mapping defined for {key_from} to {key_to}")
             key_to_cls = self.mappings[key_from][key_to][0]
             custom_mappings = self.mappings[key_from][key_to][1]
-
+        
         # Currently, all target class data members need to have default value
         # Object with __init__ that carries required non-default arguments are not supported
         inst = key_to_cls()
@@ -173,14 +175,14 @@ class ObjectMapper(object):
         def not_excluded(s):
             return not (excluded and s in excluded)
 
-        def is_included(s):
-            return included and s in included
+        def is_included(s, mapping):
+            return (included and s in included) or (mapping and s in mapping)
 
         from_obj_attributes = getmembers(from_obj, lambda a: not isroutine(a))
         from_obj_dict = {k: v for k, v in from_obj_attributes}
 
         to_obj_attributes = getmembers(inst, lambda a: not isroutine(a))
-        to_obj_dict = {k: v for k, v in to_obj_attributes if not_excluded(k) and (not_private(k) or is_included(k))}
+        to_obj_dict = {k: v for k, v in to_obj_attributes if not_excluded(k) and (not_private(k) or is_included(k, custom_mappings))}
 
         if ignore_case:
             from_props = CaseDict(from_obj_dict)
