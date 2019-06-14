@@ -2,7 +2,6 @@
 """
 Copyright (C) 2015, marazt. All rights reserved.
 """
-from typing import List, Dict
 from mapper.object_mapper_exception import ObjectMapperException
 from mapper.casedict import CaseDict
 from inspect import getmembers, isroutine
@@ -88,7 +87,8 @@ class ObjectMapper(object):
         self.mappings = {}
         pass
 
-    def create_map(self, type_from: type, type_to: type, mapping: Dict =None):
+    def create_map(self, type_from, type_to, mapping=None):
+        # type: (type, type, Dict) -> None
         """Method for adding mapping definitions
 
         :param type_from: source type
@@ -100,16 +100,16 @@ class ObjectMapper(object):
         """
 
         if (type(type_from) is not type):
-            raise ObjectMapperException(f"type_from must be a type")
+            raise ObjectMapperException("type_from must be a type")
 
         if (type(type_to) is not type):
-            raise ObjectMapperException(f"type_to must be a type")
+            raise ObjectMapperException("type_to must be a type")
 
-        if (mapping is not None and not isinstance(mapping, Dict)):
-            raise ObjectMapperException(f"mapping, if provided, must be a Dict type")
+        if (mapping is not None and not isinstance(mapping, dict)):
+            raise ObjectMapperException("mapping, if provided, must be a Dict type")
 
-        key_from = f"{type_from.__module__}.{type_from.__name__}"
-        key_to = f"{type_to.__module__}.{type_to.__name__}"
+        key_from = "{0}.{1}".format(type_from.__module__, type_from.__name__)
+        key_to = "{0}.{1}".format(type_to.__module__, type_to.__name__)
 
         if key_from in self.mappings:
             inner_map = self.mappings[key_from]
@@ -122,7 +122,8 @@ class ObjectMapper(object):
             self.mappings[key_from][key_to] = (type_to, mapping)
 
 
-    def map(self, from_obj, to_type: type=type(None), ignore_case: bool=False, allow_none: bool=False, excluded: List[str]=None, included: List[str]=None, allow_unmapped: bool=False):
+    def map(self, from_obj, to_type=type(None), ignore_case=False, allow_none=False, excluded=None, included=None, allow_unmapped=False):
+        # type: (object, type, bool, bool, List[str], List[str], bool) -> object
         """Method for creating target object instance
 
         :param from_obj: source object to be mapped from
@@ -141,10 +142,10 @@ class ObjectMapper(object):
             # one of the tests is explicitly checking for an attribute error on __dict__ if it's not set
             from_obj.__dict__
 
-        key_from = f"{from_obj.__class__.__module__}.{from_obj.__class__.__name__}"
+        key_from = "{0}.{1}".format(from_obj.__class__.__module__, from_obj.__class__.__name__)
 
         if key_from not in self.mappings:
-            raise ObjectMapperException(f"No mapping defined for {key_from}")
+            raise ObjectMapperException("No mapping defined for {0}".format(key_from))
 
         custom_mappings = None
         key_to_cls = type(None)
@@ -154,14 +155,14 @@ class ObjectMapper(object):
             # if this is a nested call and we do not currently support more than one to_types
             assert(len(self.mappings[key_from]) > 0)
             if len(self.mappings[key_from]) > 1:
-                raise ObjectMapperException(f"Ambiguous type mapping exists for {key_from}, must specifiy to_type explicitly")
+                raise ObjectMapperException("Ambiguous type mapping exists for {0}, must specifiy to_type explicitly".format(key_from))
             the_only_key_to = next(iter(self.mappings[key_from]))
             key_to_cls = self.mappings[key_from][the_only_key_to][0]
             custom_mappings = self.mappings[key_from][the_only_key_to][1]
         else:
-            key_to = f"{to_type.__module__}.{to_type.__name__}"
+            key_to = "{0}.{1}".format(to_type.__module__, to_type.__name__)
             if key_to not in self.mappings[key_from]:
-                raise ObjectMapperException(f"No mapping defined for {key_from} to {key_to}")
+                raise ObjectMapperException("No mapping defined for {0} to {1}".format(key_from, key_to))
             key_to_cls = self.mappings[key_from][key_to][0]
             custom_mappings = self.mappings[key_from][key_to][1]
         
@@ -194,7 +195,7 @@ class ObjectMapper(object):
         def map_obj(o, allow_unmapped):
             if o is not None:
                 key_from_child_cls = o.__class__
-                key_from_child = f"{key_from_child_cls.__module__}.{key_from_child_cls.__name__}"
+                key_from_child = "{0}.{1}".format(key_from_child_cls.__module__, key_from_child_cls.__name__)
                 if (key_from_child in self.mappings):
                     # if key_to has a mapping defined, nests the map() call
                     return self.map(o, type(None), ignore_case, allow_none, excluded, included, allow_unmapped)
@@ -206,7 +207,7 @@ class ObjectMapper(object):
                     if allow_unmapped:
                         return o
                     else:
-                        raise ObjectMapperException(f"No mapping defined for {key_from_child}")
+                        raise ObjectMapperException("No mapping defined for {0}".format(key_from_child))
             else:
                 return None
 
@@ -230,7 +231,7 @@ class ObjectMapper(object):
             elif prop in from_props:
                 # try find property with the same name in the source
                 from_obj_child = from_props[prop]
-                if isinstance(from_obj_child, List):
+                if isinstance(from_obj_child, list):
                     val = [map_obj(from_obj_child_i, allow_unmapped) for from_obj_child_i in from_obj_child]
                 else:
                     val = map_obj(from_obj_child, allow_unmapped)
