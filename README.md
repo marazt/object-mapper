@@ -23,6 +23,10 @@ https://pypi.python.org/pypi/object-mapper
 
 ## Versions
 
+**1.0.7 - 2019/06/19**
+
+* Fix type name inside mapper dict to avoid collision, thanks [@renanvieira](https://github.com/renanvieira)
+
 **1.0.6 - 2018/10/28**
 
 * Added ability to specify excluded fields, thanks [@uralov](https://github.com/uralov)

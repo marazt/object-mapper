@@ -1,7 +1,7 @@
 Object Mapper
 =============
 
-**Version** 1.0.6
+**Version** 1.0.7
 
 **Author** marazt
 
@@ -9,12 +9,16 @@ Object Mapper
 
 **License** The MIT License (MIT)
 
-**Last updated** 28 October 2018
+**Last updated** 19 June 2019
 
 **Package Download** https://pypi.python.org/pypi/object-mapper ---
 
 Versions
 --------
+
+**1.0.7 - 2019/06/19**
+
+- Fix type name inside mapper dict to avoid collision, thanks [@renanvieira](https://github.com/renanvieira)
 
 **1.0.6 - 2018/10/28**
 
