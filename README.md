@@ -3,7 +3,7 @@
 # Object Mapper
 
 **Version**
-1.0.6
+1.0.7
 
 **Author**
 marazt
@@ -15,7 +15,7 @@ marazt
 The MIT License (MIT)
 
 **Last updated**
-28 October 2018
+19 June 2019
 
 **Package Download**
 https://pypi.python.org/pypi/object-mapper
