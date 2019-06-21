@@ -1,4 +1,4 @@
 REM prerequisites: pip, virtualenv in path
 virtualenv venv
 cd venv/Scripts/
-activate.bat & cd ../.. & pip install -r requirements.txt & nosetests tests --with-xunit --xunit-file=TEST-results.xml
+activate.bat & cd ../.. & pip install -r requirements.txt & nose2 tests --plugin nose2.plugins.junitxml --config myconfig.cfg

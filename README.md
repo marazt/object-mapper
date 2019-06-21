@@ -19,6 +19,10 @@ The MIT License (MIT)
 
 **Package Download**
 https://pypi.python.org/pypi/object-mapper
+
+**Build Status**
+[![Build Status](https://travis-ci.com/marazt/object-mapper.svg?branch=master)](https://travis-ci.com/marazt/object-mapper)
+
 ---
 
 ## Versions
