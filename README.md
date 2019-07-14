@@ -23,6 +23,8 @@ https://pypi.python.org/pypi/object-mapper
 **Build Status**
 [![Build Status](https://travis-ci.com/marazt/object-mapper.svg?branch=master)](https://travis-ci.com/marazt/object-mapper)
 
+---
+
 ## Versions
 
 **1.1.0 - 2019/07/13**

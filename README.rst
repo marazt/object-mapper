@@ -14,8 +14,6 @@ Object Mapper
 
 **Package Download** https://pypi.python.org/pypi/object-mapper ---
 
----
-
 Versions
 --------
 
