@@ -2,10 +2,12 @@
 """
 Copyright (C) 2015, marazt. All rights reserved.
 """
-from mapper.object_mapper_exception import ObjectMapperException
-from mapper.casedict import CaseDict
 from inspect import getmembers, isroutine
 from datetime import date, datetime
+
+from mapper.casedict import CaseDict
+from mapper.object_mapper_exception import ObjectMapperException
+
 
 class ObjectMapper(object):
     """
@@ -108,13 +110,15 @@ class ObjectMapper(object):
         if (mapping is not None and not isinstance(mapping, dict)):
             raise ObjectMapperException("mapping, if provided, must be a Dict type")
 
-        key_from = "{0}.{1}".format(type_from.__module__, type_from.__name__)
-        key_to = "{0}.{1}".format(type_to.__module__, type_to.__name__)
+        key_from = type_from
+        key_to = type_to
 
         if key_from in self.mappings:
             inner_map = self.mappings[key_from]
             if key_to in inner_map:
-                raise ObjectMapperException("Mapping for {0} -> {1} already exists".format(key_from, key_to))
+                raise ObjectMapperException(
+                    "Mapping for {0}.{1} -> {2}.{3} already exists".format(key_from.__module__, key_from.__name__,
+                                                                   key_to.__module__, key_to.__name__))
             else:
                 inner_map[key_to] = (type_to, mapping)
         else:
@@ -142,33 +146,30 @@ class ObjectMapper(object):
             # one of the tests is explicitly checking for an attribute error on __dict__ if it's not set
             from_obj.__dict__
 
-        key_from = "{0}.{1}".format(from_obj.__class__.__module__, from_obj.__class__.__name__)
+        key_from = from_obj.__class__
 
         if key_from not in self.mappings:
-            raise ObjectMapperException("No mapping defined for {0}".format(key_from))
+            raise ObjectMapperException("No mapping defined for {0}.{1}"
+                .format(key_from.__module__, key_from.__name__))
 
-        custom_mappings = None
-        key_to_cls = type(None)
-        
         if to_type is None or to_type is type(None):
             # automatically infer to to_type
             # if this is a nested call and we do not currently support more than one to_types
             assert(len(self.mappings[key_from]) > 0)
             if len(self.mappings[key_from]) > 1:
-                raise ObjectMapperException("Ambiguous type mapping exists for {0}, must specifiy to_type explicitly".format(key_from))
-            the_only_key_to = next(iter(self.mappings[key_from]))
-            key_to_cls = self.mappings[key_from][the_only_key_to][0]
-            custom_mappings = self.mappings[key_from][the_only_key_to][1]
+                raise ObjectMapperException("Ambiguous type mapping exists for {0}.{1}, must specifiy to_type explicitly"
+                    .format(key_from.__module__, key_from.__name__))
+            key_to = next(iter(self.mappings[key_from]))
         else:
-            key_to = "{0}.{1}".format(to_type.__module__, to_type.__name__)
-            if key_to not in self.mappings[key_from]:
-                raise ObjectMapperException("No mapping defined for {0} to {1}".format(key_from, key_to))
-            key_to_cls = self.mappings[key_from][key_to][0]
-            custom_mappings = self.mappings[key_from][key_to][1]
+            if to_type not in self.mappings[key_from]:
+                raise ObjectMapperException("No mapping defined for {0}.{1} -> {2}.{3}"
+                .format(key_from.__module__, key_from.__name__, to_type.__module__, to_type.__name__))
+            key_to = to_type
+        custom_mappings = self.mappings[key_from][key_to][1]
         
         # Currently, all target class data members need to have default value
         # Object with __init__ that carries required non-default arguments are not supported
-        inst = key_to_cls()
+        inst = key_to()
 
         def not_private(s):
             return not s.startswith('_')
@@ -194,12 +195,11 @@ class ObjectMapper(object):
 
         def map_obj(o, allow_unmapped):
             if o is not None:
-                key_from_child_cls = o.__class__
-                key_from_child = "{0}.{1}".format(key_from_child_cls.__module__, key_from_child_cls.__name__)
+                key_from_child = o.__class__
                 if (key_from_child in self.mappings):
                     # if key_to has a mapping defined, nests the map() call
                     return self.map(o, type(None), ignore_case, allow_none, excluded, included, allow_unmapped)
-                elif (key_from_child_cls in ObjectMapper.primitive_types):
+                elif (key_from_child in ObjectMapper.primitive_types):
                     # allow primitive types without mapping
                     return o
                 else:
@@ -207,7 +207,8 @@ class ObjectMapper(object):
                     if allow_unmapped:
                         return o
                     else:
-                        raise ObjectMapperException("No mapping defined for {0}".format(key_from_child))
+                        raise ObjectMapperException("No mapping defined for {0}.{1}"
+                            .format(key_from_child.__module__, key_from_child.__name__))
             else:
                 return None
 

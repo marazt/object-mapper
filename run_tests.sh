@@ -1,6 +1,7 @@
 #!bin/bash
 # prerequisites: pip, virtualenv in path
+pip install virtualenv
 virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
-nosetests tests --with-xunit --xunit-file=TEST-results.xml
+nose2 tests --plugin nose2.plugins.junitxml --config myconfig.cfg

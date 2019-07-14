@@ -1,2 +1,1 @@
-datetime
-nose
+nose2==0.9.1

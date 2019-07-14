@@ -3,14 +3,19 @@
 Copyright (C) 2015, marazt. All rights reserved.
 """
 import unittest
-
 from datetime import datetime
+
 from mapper.object_mapper import ObjectMapper
 from mapper.object_mapper_exception import ObjectMapperException
+
+NO_MAPPING_FOUND_EXCEPTION_MESSAGE = "No mapping defined for {0}.{1}"
+NO_MAPPING_PAIR_FOUND_EXCEPTION_MESSAGE = "No mapping defined for {0}.{1} -> {2}.{3}"
+MAPPING_ALREADY_EXISTS_EXCEPTION_MESSAGE = "Mapping for {0}.{1} -> {2}.{3} already exists"
 
 
 class ToTestClass(object):
     """ To Test Class """
+
     def __init__(self):
         self.name = ""
         self.date = ""
@@ -20,6 +25,7 @@ class ToTestClass(object):
 
 class ToTestClassTwo(object):
     """ To Test Class Two """
+
     def __init__(self):
         self.all = ""
         pass
@@ -27,12 +33,7 @@ class ToTestClassTwo(object):
 
 class ToTestClassEmpty(object):
     """ To Test Class Empty """
-    def __init__(self):
-        pass
 
-
-class ToTestClassEmpty(object):
-    """ To Test Class Empty """
     def __init__(self):
         pass
 
@@ -56,6 +57,7 @@ class ToTestComplexChildClass(object):
 
 class FromTestClass(object):
     """ From Test Class """
+
     def __init__(self):
         self.name = "Igor"
         self.surname = "Hnizdo"
@@ -147,7 +149,8 @@ class ObjectMapperTest(unittest.TestCase):
 
         # Arrange
         exc = False
-        msg = "Mapping for tests.object_mapper_test.FromTestClass -> tests.object_mapper_test.ToTestClass already exists"
+        msg = MAPPING_ALREADY_EXISTS_EXCEPTION_MESSAGE.format(FromTestClass.__module__, FromTestClass.__name__,
+                                                              ToTestClass.__module__, ToTestClass.__name__)
         mapper = ObjectMapper()
 
         mapper.create_map(FromTestClass, ToTestClass)
@@ -231,14 +234,35 @@ class ObjectMapperTest(unittest.TestCase):
 
         # Arrange
         exc = False
-        msg = "No mapping defined for tests.object_mapper_test.FromTestClass"
         from_class = FromTestClass()
-
+        msg = NO_MAPPING_FOUND_EXCEPTION_MESSAGE.format(from_class.__module__, from_class.__class__.__name__)
         mapper = ObjectMapper()
 
         # Act
         try:
             mapper.map(from_class)
+        except ObjectMapperException as ex:
+            self.assertEqual(str(ex), msg, "Exception message must be correct")
+            exc = True
+
+        # Assert
+        self.assertTrue(exc, "Exception must be thrown")
+
+    def test_mapping_creation_no_mapping_pair_defined(self):
+        """ Test mapping creation with no mapping defined for a from -> to pair"""
+
+        # Arrange
+        exc = False
+        from_class = FromTestClass()
+        to_class = ToTestClass()
+        msg = NO_MAPPING_PAIR_FOUND_EXCEPTION_MESSAGE.format(from_class.__module__, from_class.__class__.__name__, 
+                                                             to_class.__module__, to_class.__class__.__name__)
+        mapper = ObjectMapper()
+        mapper.create_map(FromTestClass, ToTestClassTwo, {})
+
+        # Act
+        try:
+            mapper.map(from_class, ToTestClass)
         except ObjectMapperException as ex:
             self.assertEqual(str(ex), msg, "Exception message must be correct")
             exc = True
@@ -270,11 +294,13 @@ class ObjectMapperTest(unittest.TestCase):
         # Arrange
         class ToTestClass2(object):
             """ To Test Class 2 """
+
             def __init__(self):
                 self.name = ""
 
         class FromTestClass2(object):
             """ From Test Class 2 """
+
             def __init__(self):
                 self.Name = "Name"
 
@@ -283,7 +309,7 @@ class ObjectMapperTest(unittest.TestCase):
         mapper.create_map(FromTestClass2, ToTestClass2)
 
         # Act
-        result = mapper.map(FromTestClass2(), ignore_case=True)
+        result = mapper.map(FromTestClass2(), ToTestClass2, ignore_case=True)
 
         # Assert
         self.assertEqual(result.name, from_class.Name, "Name mapping must be equal")
@@ -312,6 +338,7 @@ class ObjectMapperTest(unittest.TestCase):
 
         # Arrange
         _propNames = ['name', 'date']
+
         class ToCustomDirClass(object):
             def __dir__(self):
                 props = list(self.__dict__.keys())
@@ -349,7 +376,7 @@ class ObjectMapperTest(unittest.TestCase):
 
     def test_mapping_excluded_field(self):
         """Test mapping with excluded fields"""
-        #Arrange
+        # Arrange
         from_class = FromTestClass()
         mapper = ObjectMapper()
         mapper.create_map(FromTestClass, ToTestClass)
@@ -357,8 +384,8 @@ class ObjectMapperTest(unittest.TestCase):
         #Act
         result = mapper.map(FromTestClass(), excluded=['date'])
 
-        #Assert
-        print(result)      
+        # Assert
+        print(result)
         self.assertTrue(isinstance(result, ToTestClass), "Type must be ToTestClass")
         self.assertEqual(result.name, from_class.name, "Name mapping must be equal")
         self.assertEqual(result.date, '', "Date mapping must be equal")

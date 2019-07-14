@@ -1,0 +1,18 @@
+language: python            # this works for Linux but is an error on macOS or Windows
+matrix:
+  include:
+    - name: "Python 3.7.1 on Xenial Linux"
+      python: 3.7           # this works for Linux but is ignored on macOS or Windows
+      dist: xenial          # required for Python >= 3.7
+      script: bash run_tests.sh
+    - name: "Python 3.7.3 on Windows "
+      os: windows           # Windows 10.0.17134 N/A Build 17134
+      language: shell       # 'language: python' is an error on Travis CI Windows
+      before_install:
+        - choco install python3
+        - pip install virtualenv
+        - virtualenv $HOME/venv
+        - source $HOME/venv/Scripts/activate
+        - pip install -r requirements.txt
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      script: nose2 tests --plugin nose2.plugins.junitxml --config myconfig.cfg

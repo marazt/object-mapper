@@ -15,18 +15,23 @@ marazt
 The MIT License (MIT)
 
 **Last updated**
-10 June 2019
+13 July 2019
 
 **Package Download**
 https://pypi.python.org/pypi/object-mapper
 
----
+**Build Status**
+[![Build Status](https://travis-ci.com/marazt/object-mapper.svg?branch=master)](https://travis-ci.com/marazt/object-mapper)
 
 ## Versions
 
-**1.1.0 - 2019/06/10**
+**1.1.0 - 2019/07/13**
 
 - Add basic support for nested object, thanks [@direbearform](https://github.com/direbearform)
+
+**1.0.7 - 2019/06/19**
+
+* Fix type name inside mapper dict to avoid collision, thanks [@renanvieira](https://github.com/renanvieira)
 
 **1.0.6 - 2018/10/28**
 
