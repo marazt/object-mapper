@@ -1,7 +1,7 @@
 Object Mapper
 =============
 
-**Version** 1.0.7
+**Version** 1.1.0
 
 **Author** marazt
 
@@ -9,12 +9,17 @@ Object Mapper
 
 **License** The MIT License (MIT)
 
-**Last updated** 19 June 2019
+**Last updated** 13 July 2019
+
 
 **Package Download** https://pypi.python.org/pypi/object-mapper ---
 
 Versions
 --------
+
+**1.1.0 - 2019/07/13**
+
+- Add basic support for nested object, thanks [@direbearform](https://github.com/direbearform)
 
 **1.0.7 - 2019/06/19**
 

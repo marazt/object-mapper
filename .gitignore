@@ -58,3 +58,6 @@ target/
 # Idea
 .idea
 .python-version
+
+# VSCode
+.vscode
