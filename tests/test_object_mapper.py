@@ -84,6 +84,24 @@ class FromTestComplexClass(object):
         pass
 
 
+class MyMetaClass(type):
+    pass
+
+
+class FromTestClassWithCustomMetaClass(metaclass=MyMetaClass):
+    def __init__(self):
+        self.name = "Arcangelo"
+        self.surname = "Bardacci"
+        self.date = datetime(2019, 8, 28)
+        self._actor_name = "Gianrico Tedeschi"
+
+
+class ToTestClassWithCustomMetaClass(metaclass=MyMetaClass):
+    def __init__(self):
+        self.name = ""
+        self.date = ""
+        self._actor_name = ""
+
 
 class ObjectMapperTest(unittest.TestCase):
     """
@@ -449,3 +467,35 @@ class ObjectMapperTest(unittest.TestCase):
         self.assertTrue(all(isinstance(k, ToTestComplexChildClass) for k in result.knows), "Children target types must be same")
         self.assertEqual(result.knows[0].full_name, from_class.knows[0].full_name, "StudentName(0) mapping must be equal")
         self.assertEqual(result.knows[1].full_name, from_class.knows[1].full_name, "StudentName(1) mapping must be equal")
+
+    def test_mapping_from_custom_metaclass_correct(self):
+        # Arrange
+        mapper = ObjectMapper()
+        mapper.create_map(FromTestClassWithCustomMetaClass, ToTestClass)
+        from_class = FromTestClassWithCustomMetaClass()
+
+        # Act
+        result = mapper.map(from_class)
+
+        # Assert
+        self.assertTrue(isinstance(result, ToTestClass), "Target types must be same")
+        self.assertEqual(result.name, from_class.name, "Name mapping must be equal")
+        self.assertEqual(result.date, from_class.date, "Date mapping must be equal")
+        self.assertEqual(result._actor_name, "", "Private should not be copied by default")
+        self.assertNotIn("surname", result.__dict__, "To class must not contain surname")
+
+    def test_mapping_to_custom_metaclass_correct(self):
+        # Arrange
+        mapper = ObjectMapper()
+        mapper.create_map(FromTestClass, ToTestClassWithCustomMetaClass)
+        from_class = FromTestClass()
+
+        # Act
+        result = mapper.map(from_class)
+
+        # Assert
+        self.assertTrue(isinstance(result, ToTestClassWithCustomMetaClass), "Target types must be same")
+        self.assertEqual(result.name, from_class.name, "Name mapping must be equal")
+        self.assertEqual(result.date, from_class.date, "Date mapping must be equal")
+        self.assertEqual(result._actor_name, "", "Private should not be copied by default")
+        self.assertNotIn("surname", result.__dict__, "To class must not contain surname")
