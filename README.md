@@ -147,6 +147,40 @@ It helps you to create objects between project layers (data layer, service layer
 
   **Note:** You can find more examples in tests package
 
+5. **Mapping with nested objects**
+
+Suppose you have two classes `Person` and `MyPerson`, each one of them contains an `address` field of types `Address` and `MyAdress` respectively. And you want to map from `Person` to `MyPerson`. Initialization of the `ObjectMapper` will be:
+
+```
+class MyPerson:
+    def __init__(self):
+        self.address = None
+class MyAdress:
+    def __init__(self):
+        self.city = None
+        self.street = None
+class Address:
+    def __init__(self):
+        self.line = "Amman-Maka Street"
+class Person:
+    def __init__(self):
+        self.address = Address()
+
+mapper = ObjectMapper()
+mapper.create_map(
+    Address, 
+    MyAdress, 
+    {
+        'city': lambda add: add.line.split('-')[0],
+        'street': lambda add: add.line.split('-')[1]
+    }
+)
+mapper.create_map(Person, MyPerson)
+person = mapper.map(Person(), MyPerson)
+assert type(person.address) is MyAdress
+assert '{}-{}'.format(person.address.city, person.address.street) == Person().address.line
+```
+
 ## Installation
 
 * Download this project
