@@ -3,8 +3,12 @@
 Copyright (c) 2013 Optiflows
 https://bitbucket.org/optiflowsrd/obelus/src/tip/obelus/casedict.py
 """
+import sys
 
-from collections import MutableMapping
+if sys.version_info.major > 3 and sys.version_info.minor >= 3:
+    from collections.abc import MutableMapping
+else:
+    from collections import MutableMapping
 
 
 _sentinel = object()
