@@ -3,6 +3,7 @@
 Copyright (c) 2013 Optiflows
 https://bitbucket.org/optiflowsrd/obelus/src/tip/obelus/casedict.py
 """
+
 from collections import MutableMapping
 
 
