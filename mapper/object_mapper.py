@@ -2,8 +2,9 @@
 """
 Copyright (C) 2015, marazt. All rights reserved.
 """
-from inspect import getmembers, isroutine
+from inspect import getmembers, isroutine, isclass
 from datetime import date, datetime
+from dataclasses import is_dataclass, MISSING
 
 from mapper.casedict import CaseDict
 from mapper.object_mapper_exception import ObjectMapperException
@@ -101,11 +102,11 @@ class ObjectMapper(object):
         :return: None
         """
 
-        if (type(type_from) is not type):
-            raise ObjectMapperException("type_from must be a type")
+        if not isclass(type_from):
+            raise ObjectMapperException("type_from must be a class")
 
-        if (type(type_to) is not type):
-            raise ObjectMapperException("type_to must be a type")
+        if not isclass(type_to):
+            raise ObjectMapperException("type_to must be a class")
 
         if (mapping is not None and not isinstance(mapping, dict)):
             raise ObjectMapperException("mapping, if provided, must be a Dict type")
@@ -169,7 +170,17 @@ class ObjectMapper(object):
         
         # Currently, all target class data members need to have default value
         # Object with __init__ that carries required non-default arguments are not supported
-        inst = key_to()
+        if is_dataclass(key_to):
+            def default_val(v):
+                if v.default is not MISSING:
+                    return v.default
+                if v.default_factory is not MISSING:
+                    return v.default_factory()
+                return None
+            inst = key_to(**{k: default_val(v) for k, v in key_to.__dataclass_fields__.items()})
+        else:
+            inst = key_to()
+
 
         def not_private(s):
             return not s.startswith('_')
