@@ -15,7 +15,7 @@ class ObjectMapper(object):
     Supports mapping conversions too
     """
 
-    primitive_types = { int, str, bool, date, datetime }
+    primitive_types = { int, float, str, bool, date, datetime }
 
     def __init__(self):
         """Constructor
