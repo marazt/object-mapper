@@ -101,10 +101,10 @@ class ObjectMapper(object):
         :return: None
         """
 
-        if (type(type_from) is not type):
+        if (not isinstance(type_from, type)):
             raise ObjectMapperException("type_from must be a type")
 
-        if (type(type_to) is not type):
+        if (not isinstance(type_to, type)):
             raise ObjectMapperException("type_to must be a type")
 
         if (mapping is not None and not isinstance(mapping, dict)):
