@@ -4,8 +4,12 @@ Copyright (c) 2013 Optiflows
 https://bitbucket.org/optiflowsrd/obelus/src/tip/obelus/casedict.py
 """
 
-from collections import MutableMapping
+import sys
 
+if sys.version_info[:2] >= (3, 8):
+    from collections.abc import MutableMapping
+else:
+    from collections import MutableMapping
 
 _sentinel = object()
 
